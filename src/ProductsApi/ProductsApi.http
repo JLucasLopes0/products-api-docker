@@ -1,0 +1,21 @@
+@ProductsApi_HostAddress = http://localhost:8080
+
+GET {{ProductsApi_HostAddress}}/products
+Accept: application/json
+
+###
+
+GET {{ProductsApi_HostAddress}}/products/1
+Accept: application/json
+
+###
+
+POST {{ProductsApi_HostAddress}}/products
+Content-Type: application/json
+
+{
+  "name": "Notebook Gamer",
+  "price": 7500
+}
+
+###

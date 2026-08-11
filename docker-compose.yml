@@ -1,0 +1,36 @@
+services:
+  db:
+    image: postgres:16
+    container_name: products-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: productsdb
+    ports:
+      - "5433:5432"
+    volumes:
+      - products-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d productsdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: src/ProductsApi/Dockerfile
+    image: products-api-docker:1.0.0
+    container_name: products-api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ConnectionStrings__DefaultConnection: Host=db;Port=5432;Database=productsdb;Username=postgres;Password=postgres
+    ports:
+      - "8080:8080"
+
+volumes:
+  products-db-data:
